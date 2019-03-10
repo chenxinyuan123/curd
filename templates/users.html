@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block page-wrapper %}
+    {% load pagination_tags %}
+    {% autopaginate users 5 %}
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-lg-12">
+            <strong style="font-size: large;">查看用户</strong>
+        </div>
+    </div><!-- /.row -->
+
+    <!--搜索头-->
+    <div class="row well" style="margin-left: 2px;margin-right: 2px">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="exampleInputName2">出版社</label>
+                <input type="text" class="form-control" id="exampleInputName2">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail2">作者</label>
+                <input type="email" class="form-control" id="exampleInputEmail2">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail2">时间</label>
+                <input type="email" class="form-control" id="exampleInputEmail2">
+            </div>
+            <button type="submit" class="btn btn-default pull-right">搜索</button>
+        </form>
+    </div>
+
+    <div>
+        <a href="/users/add/" class="btn btn-primary" style="margin-bottom: 5px">添加用户</a>
+        <a href="/users/testcss/" class="btn btn-primary" style="margin-bottom: 5px">测试CSS</a>
+    </div>
+    <table id="mytable" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>爱好</th>
+            <th>薪水</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td> {{ user.user }}</td>
+                <td>{{ user.age }}</td>
+                <td>{{ user.hobby }}</td>
+                <td>{{ user.salary }}</td>
+                <td>
+                    <a href="/users/edit/{{ user.pk }}/" class="btn btn-info">编辑</a>
+                    <button onclick="foo({{ user.pk }},this)" class="btn btn-danger">删除</button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% paginate %}
+{% endblock %}
+
+{% block scriptblock %}
+    <script>
+        function foo(pk, Btn) {
+            var $tr = $(Btn).parent().parent();
+            swal(
+                {
+                    title: "您确定要删除这条数据吗",
+                    text: "删除后将无法恢复，请谨慎操作！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定删除！",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            type: "post",
+                            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+                            url: "/users/delete/" + pk + "/",
+                            success: function (dataObj) {
+                                //var dataObj = $.parseJSON(data);
+                                if (dataObj.status === 1) { //后端删除成功
+                                    swal("删除成功", dataObj.info, "success");
+                                    $tr.remove()  //删除页面中那一行数据
+                                } else {
+                                    swal("出错啦。。。", dataObj.msg, "error");  //后端删除失败
+                                }
+                            },
+                            error: function () {  // ajax请求失败
+                                swal("啊哦。。。", "服务器走丢了。。。", "error");
+                            }
+                        })
+                    }
+                    else {
+                        swal({
+                            title: "已取消",
+                            text: "您取消了删除操作！",
+                            type: "error"
+                        })
+                    }
+                }
+            )
+        }
+
+    </script>
+{% endblock %}

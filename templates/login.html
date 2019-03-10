@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>登录页面</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style_log.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/userpanel.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/jquery.ui.all.css">
+
+    </head>
+<body class="login" mycollectionplug="bind">
+<form action="/login/" method="post" novalidate>
+    {% csrf_token %}
+    <div class="login_m">
+        <div class="login_boder">
+
+            <div class="login_padding" id="login_model">
+
+                <h2>用户名:</h2>
+                <label>
+                    <input type="text" name="username" class="txt_input txt_input2">
+                </label>
+                <h2>密码:</h2>
+                <label>
+                    <input type="password" name="password" id="userpwd" class="txt_input">
+                </label>
+
+                <p class="forgot"><a id="iforget" href="javascript:void(0);">Forgot your password?</a></p>
+                <div class="rem_sub">
+                    <div class="rem_sub_l">
+                        <input type="checkbox" name="checkbox" id="save_me">
+                        <label for="checkbox">Remember me</label>
+                    </div>
+                    <label>
+                        <input type="submit" class="sub_button" name="button" id="button" value="登录"
+                               style="opacity: 0.7;">
+                    </label>
+                </div>
+            </div>
+            <!--login_padding  Sign up end-->
+        </div><!--login_boder end-->
+    </div><!--login_m end-->
+</form>
+<br> <br>
+</body>
+</html>
